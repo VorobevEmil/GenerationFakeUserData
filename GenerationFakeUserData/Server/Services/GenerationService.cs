@@ -1,8 +1,11 @@
-﻿using GenerationFakeUserData.Shared.Models;
+﻿using CsvHelper;
+using GenerationFakeUserData.Shared.Models;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Globalization;
+using System.Text;
 using System.Xml.Linq;
 
 namespace GenerationFakeUserData.Server.Services
@@ -13,7 +16,7 @@ namespace GenerationFakeUserData.Server.Services
         {
 
             List<UserInfo> users = new List<UserInfo>();
-            var jsonParseUser = JsonConvert.DeserializeObject<JsonParseUser>(File.ReadAllText("wwwroot/" + configure.Region + ".json"))!;
+            var jsonParseUser = JsonConvert.DeserializeObject<JsonParseUser>(File.ReadAllText("wwwrowot/" + configure.Region + ".json"))!;
 
             for (int i = 0; i < 10; i++)
             {
@@ -21,6 +24,20 @@ namespace GenerationFakeUserData.Server.Services
             }
 
             return users;
+        }
+
+        public byte[] SaveGenerationUserData(List<UserInfo> users)
+        {
+
+            using (var writer = new StringWriter())
+            {
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(users);
+                }
+                var stringFile = writer.ToString();
+                return Encoding.UTF8.GetBytes(stringFile);
+            }
         }
     }
 }

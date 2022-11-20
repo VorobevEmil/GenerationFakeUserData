@@ -27,9 +27,13 @@ namespace GenerationFakeUserData.Server.Controllers
 
                 return Ok(_service.ReceiveFakeUserData(configure));
             }
-            catch (Exception e)
+            catch (DirectoryNotFoundException)
             {
-                return BadRequest("");
+                return BadRequest("Не найден список для генерации данных");
+            }
+            catch (Exception)
+            {
+                return BadRequest("Произошла ошибка во время генерации данных");
             }
         }
 
@@ -40,24 +44,14 @@ namespace GenerationFakeUserData.Server.Controllers
             if (users == null || users.Count == default)
                 return BadRequest("Пожалуйста прикрепите файл");
 
-            byte[] file;
             try
             {
-                using (var writer = new StringWriter())
-                {
-                    using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                    {
-                        csv.WriteRecords(users);
-                    }
-                    var stringFile = writer.ToString();
-                    file = Encoding.UTF8.GetBytes(stringFile);
-                }
+                return File(_service.SaveGenerationUserData(users), "text/csv");
             }
             catch (Exception)
             {
                 return BadRequest("Не удалось обработать файл");
             }
-            return File(file, "text/csv");
         }
     }
 }

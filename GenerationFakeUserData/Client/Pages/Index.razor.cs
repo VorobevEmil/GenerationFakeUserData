@@ -10,6 +10,7 @@ namespace GenerationFakeUserData.Client.Pages
     {
         [Inject] private HttpClient HttpClient { get; set; } = default!;
         [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+        [Inject] private ISnackbar Snackbar { get; set; } = default!;
         ConfigureGenerationRequest ConfigureGenerationRequest = new();
         private List<UserInfo> Users = default!;
 
@@ -23,6 +24,7 @@ namespace GenerationFakeUserData.Client.Pages
             }
             else
             {
+                Snackbar.Add(await httpResponseMessage.Content.ReadAsStringAsync(), Severity.Error);
                 return new List<UserInfo>();
             }
         }
@@ -55,6 +57,10 @@ namespace GenerationFakeUserData.Client.Pages
                 var bytesFile = await httpResponseMessage.Content.ReadAsByteArrayAsync();
                 using var streamRef = new DotNetStreamReference(stream: new MemoryStream(bytesFile));
                 await JSRuntime.InvokeVoidAsync("downloadFileFromStream", "filePersons.csv", streamRef);
+            }
+            else
+            {
+                Snackbar.Add(await httpResponseMessage.Content.ReadAsStringAsync(), Severity.Error);
             }
         }
     }
