@@ -16,7 +16,7 @@ namespace GenerationFakeUserData.Server.Services
         {
 
             List<UserInfo> users = new List<UserInfo>();
-            var jsonParseUser = JsonConvert.DeserializeObject<JsonParseUser>(File.ReadAllText("wwwrowot/" + configure.Region + ".json"))!;
+            var jsonParseUser = JsonConvert.DeserializeObject<JsonParseUser>(File.ReadAllText("wwwroot/" + configure.Region + ".json"))!;
 
             for (int i = 0; i < 10; i++)
             {
