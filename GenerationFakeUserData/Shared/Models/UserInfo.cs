@@ -60,6 +60,9 @@ namespace GenerationFakeUserData.Shared.Models
             int lenghtName = userInfo.Name.Length;
             int lenghtAddress = userInfo.Address.Length;
 
+            int fractionalPart = (int)((countError - Math.Truncate(countError)) * 100);
+            if (_rnd.Next(fractionalPart) > fractionalPart / 2)
+                countError++;
 
             for (int i = 0; i < countError; i++)
             {
@@ -77,7 +80,6 @@ namespace GenerationFakeUserData.Shared.Models
                 }
             }
 
-            var fractionalPart = countError - Math.Truncate(countError);
             return userInfo;
         }
 
