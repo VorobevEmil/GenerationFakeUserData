@@ -1,0 +1,64 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<div class="container mt-12">
+    <div style="display:flex; flex-direction: column;">
+        <div>
+            <div style="display: flex;align-items: center;">
+                <MudSlider Min="0" Max="10" Value="@ConfigureGenerationRequest.CountError" ValueChanged="(async(t) => {ConfigureGenerationRequest.CountError = t; await SetFakeUserDataAsync();})" TickMarks="true" T="double" Step="0.25" Color="Color.Info" />
+                <span class="mx-2"></span>
+                <MudTextField DebounceInterval="500" Style="width:300px;" Value="@ConfigureGenerationRequest.CountError" ValueChanged="(async(t) => {ConfigureGenerationRequest.CountError = t; await SetFakeUserDataAsync();})" Margin="Margin.Dense" Label="Количество ошибок" T="double" Variant="@Variant.Outlined" />
+            </div>
+        </div>
+        <div class="my-3">
+            <div style="display: flex;align-items: center;">
+                <MudTextField DebounceInterval="500" Value="ConfigureGenerationRequest.Seed" ValueChanged="(async(t) => {ConfigureGenerationRequest.Seed = t; await SetFakeUserDataAsync();})" Margin="Margin.Dense" Label="seed" T="int" Variant="@Variant.Outlined" />
+                <span class="mx-2"></span>
+                <MudButton Style="width:130px;" Variant="Variant.Filled" Color="Color.Primary" OnClick="(async() => { ConfigureGenerationRequest.Seed = Random.Shared.Next(0,10_000_000); await SetFakeUserDataAsync();})">Random</MudButton>
+            </div>
+        </div>
+        <div>
+            <MudSelect T="string" Value="ConfigureGenerationRequest.Region" ValueChanged="(async(t) => {ConfigureGenerationRequest.Region = t; await SetFakeUserDataAsync();})" Label="Регион" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter">
+                <MudSelectItem T="string" Value="@("en-US")">English / USA</MudSelectItem>
+                <MudSelectItem T="string" Value="@("ru-RU")">Русский / Россия</MudSelectItem>
+                <MudSelectItem T="string" Value="@("be-BE")">Беларускi / Беларусь</MudSelectItem>
+            </MudSelect>
+        </div>
+    </div>
+
+    @if (Users != null && Users.Count > 0)
+    {
+        <div class="mt-5">
+            <div id="another_unique_identifier" style="height:390px;overflow: auto;">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Address</th>
+                            <th scope="col">Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Users)
+                        {
+                            <tr>
+                                <th scope="row">@user.Number</th>
+                                <td>@user.Id</td>
+                                <td>@user.Name</td>
+                                <td>@user.Address</td>
+                                <td>@user.Phone</td>
+                            </tr>
+                        }
+                        <MudScrollToTop OnScroll="OnScrollAsync" Selector="#another_unique_identifier" />
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="mt-2 d-flex justify-content-end">
+            <MudButton OnClick="(async() => await SaveGenerationUserData())" Variant="Variant.Filled" Color="Color.Success">Export to CSV</MudButton>
+        </div>
+    }
+</div>
